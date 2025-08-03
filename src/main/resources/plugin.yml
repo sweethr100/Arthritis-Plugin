@@ -1,0 +1,4 @@
+name: arthritis-plugin
+version: '1.0-SNAPSHOT'
+main: seml.arthritisPlugin.ArthritisPlugin
+api-version: '1.21'
