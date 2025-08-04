@@ -1,8 +1,14 @@
 package seml.arthritisPlugin
 
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes.players
+import io.papermc.paper.datacomponent.DataComponentTypes
+import io.papermc.paper.datacomponent.item.Consumable
+import io.papermc.paper.datacomponent.item.Consumable.consumable
+import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect
+import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -11,6 +17,9 @@ import org.bukkit.scoreboard.Scoreboard
 import java.util.UUID
 import kotlin.math.min
 import org.bukkit.Sound
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.ShapedRecipe
+import org.bukkit.entity.Item
 
 class ArthritisPlugin : JavaPlugin() {
 
@@ -31,11 +40,12 @@ class ArthritisPlugin : JavaPlugin() {
 
         startArthritisActionBarTask()
         randomArthritisIncrease()
+        addCustomRecipe()
     }
 
     fun getJumpRunListFromMyValue(): List<List<Int>> {
         val myvalue = mutableListOf<List<Int>>()
-        val section = config.getConfigurationSection("myvalue") ?: return emptyList()
+        val section = config.getConfigurationSection("ages") ?: return emptyList()
         for (key in section.getKeys(false)) {
             val jump = section.getInt("$key.jump", 0)
             val run = section.getInt("$key.run", 0)
@@ -102,5 +112,34 @@ class ArthritisPlugin : JavaPlugin() {
             }
         }, 0L, 1200L)
 
+    }
+
+    fun addCustomRecipe() {
+        val bedrock = ItemStack(Material.BEDROCK)
+
+        val builder = Consumable.consumable()
+            .consumeSeconds(2f)
+            .animation(ItemUseAnimation.EAT)
+        val consumable = builder.build()
+
+        bedrock.setData(DataComponentTypes.CONSUMABLE, consumable)
+
+        val key = NamespacedKey(this, "medicine")
+        val recipe = ShapedRecipe(key, bedrock)
+        recipe.shape(
+            "ABC",
+            "DEF",
+            "GHI"
+        )
+        recipe.setIngredient('A', Material.PUFFERFISH)           // 첫째 줄 왼쪽
+        recipe.setIngredient('B', Material.DIAMOND_BLOCK)        // 첫째 줄 가운데
+        recipe.setIngredient('C', Material.POWDER_SNOW_BUCKET)   // 첫째 줄 오른쪽
+        recipe.setIngredient('D', Material.END_CRYSTAL)          // 둘째 줄 왼쪽
+        recipe.setIngredient('E', Material.HEART_OF_THE_SEA)  // 둘째 줄 가운데
+        recipe.setIngredient('F', Material.BLAZE_ROD)            // 둘째 줄 오른쪽
+        recipe.setIngredient('G', Material.RESIN_CLUMP)           // 셋째 줄 왼쪽
+        recipe.setIngredient('H', Material.AMETHYST_SHARD)       // 셋째 줄 가운데
+        recipe.setIngredient('I', Material.GLOW_INK_SAC) // 셋째 줄 오른쪽
+        server.addRecipe(recipe)
     }
 }
