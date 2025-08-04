@@ -114,6 +114,8 @@ class ArthritisPlugin : JavaPlugin() {
 
     }
 
+    // TODO : config.yml로 레시피 사용자 설정하기
+
     fun addCustomRecipe() {
         val bedrock = ItemStack(Material.BEDROCK)
 
