@@ -1,9 +1,16 @@
 package seml.arthritisPlugin
 
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes.players
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Scoreboard
 import java.util.UUID
+import kotlin.math.min
+import org.bukkit.Sound
 
 class ArthritisPlugin : JavaPlugin() {
 
@@ -23,6 +30,7 @@ class ArthritisPlugin : JavaPlugin() {
         )
 
         startArthritisActionBarTask()
+        randomArthritisIncrease()
     }
 
     fun getJumpRunListFromMyValue(): List<List<Int>> {
@@ -36,6 +44,26 @@ class ArthritisPlugin : JavaPlugin() {
         return myvalue
     }
 
+    fun addPlayerArthritis(player: Player, diff: Int) {
+
+        var stats = Arthritis.getScore(player).score
+
+        if (stats == 100 && diff > 0) {
+            player.addPotionEffect(PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 0, false, false))
+        }
+
+        stats = min(stats + diff , 100)
+
+        if (stats >= 50) {
+            player.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, -1, 0, false, false))
+        }
+        if (stats >= 100) {
+            player.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, -1, 1, false, false))
+        }
+
+        Arthritis.getScore(player).score = stats
+    }
+
     fun startArthritisActionBarTask() {
         server.scheduler.runTaskTimer(this, Runnable {
             for (player in server.onlinePlayers) {
@@ -44,5 +72,35 @@ class ArthritisPlugin : JavaPlugin() {
                 player.sendActionBar("§a당신의 관절염 지수: $value")
             }
         }, 0L, 1L) // 0틱 후 시작, 20틱(1초)마다 반복
+    }
+
+    fun randomArthritisIncrease() {
+        server.scheduler.runTaskTimer(this, Runnable {
+
+            val players = server.onlinePlayers
+
+            if (players.isNotEmpty()) {
+
+                var stackCount = 0
+                for (player in players) {
+                    stackCount = stackCount + player.inventory.contents
+                        .count { it != null && it.type != Material.AIR }
+                }
+
+                if (stackCount / players.size >= 15) {
+                    val randomPlayer = players.random()
+                    randomPlayer.sendMessage("다리를 삐끗했어요!")
+                    randomPlayer.playSound(
+                        randomPlayer.location,
+                        Sound.ENTITY_PLAYER_HURT,
+                        1f,
+                        1f
+                    )
+                    addPlayerArthritis(randomPlayer, 5)
+                }
+
+            }
+        }, 0L, 1200L)
+
     }
 }

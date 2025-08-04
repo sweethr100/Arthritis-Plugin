@@ -37,7 +37,7 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             val player = event.player
             val age = plugin.playerAge[player.uniqueId] ?: 10
 
-            addPlayerArthritis(event.player,plugin.getJumpRunListFromMyValue()[(age/10)-1][0])
+            plugin.addPlayerArthritis(event.player,plugin.getJumpRunListFromMyValue()[(age/10)-1][0])
         }
     }
 
@@ -47,28 +47,8 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             val player = event.player
             val age = plugin.playerAge[player.uniqueId] ?: 10
 
-            addPlayerArthritis(event.player,plugin.getJumpRunListFromMyValue()[(age/10)-1][1])
+            plugin.addPlayerArthritis(event.player,plugin.getJumpRunListFromMyValue()[(age/10)-1][1])
         }
-    }
-
-    fun addPlayerArthritis(player: Player, diff: Int) {
-
-        var stats = plugin.Arthritis.getScore(player).score
-
-        if (stats == 100 && diff > 0) {
-            player.addPotionEffect(PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 0, false, false))
-        }
-
-        stats = min(stats + diff , 100)
-
-        if (stats >= 50) {
-            player.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, -1, 0, false, false))
-        }
-        if (stats >= 100) {
-            player.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, -1, 1, false, false))
-        }
-
-        plugin.Arthritis.getScore(player).score = stats
     }
 
     @EventHandler
@@ -76,7 +56,7 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
         val player = event.player
 
         plugin.server.scheduler.runTaskLater(plugin, Runnable {
-            addPlayerArthritis(player,0)
+            plugin.addPlayerArthritis(player,0)
             // 또는 원하는 효과 부여 코드
         }, 1L)
 
