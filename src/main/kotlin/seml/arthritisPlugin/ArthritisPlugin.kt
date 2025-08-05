@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.scoreboard.Objective
 import net.kyori.adventure.text.Component
+import org.bukkit.inventory.ShapelessRecipe
 
 class ArthritisPlugin : JavaPlugin() {
 
@@ -114,8 +115,6 @@ class ArthritisPlugin : JavaPlugin() {
 
     }
 
-    // TODO : config.yml로 레시피 사용자 설정하기
-
     fun addCustomRecipe() {
 
         val consumable = consumable()
@@ -127,22 +126,20 @@ class ArthritisPlugin : JavaPlugin() {
         bedrock.setData(DataComponentTypes.CONSUMABLE, consumable)
         bedrock.setData(DataComponentTypes.CUSTOM_NAME, Component.text("§c관절염 치료제"))
 
+        val medicineRecipe = config.getStringList("medicineRecipe")
+
         val key = NamespacedKey(this, "medicine")
-        val recipe = ShapedRecipe(key, bedrock)
-        recipe.shape(
-            "ABC",
-            "DEF",
-            "GHI"
-        )
-        recipe.setIngredient('A', Material.PUFFERFISH)           // 첫째 줄 왼쪽
-        recipe.setIngredient('B', Material.DIAMOND_BLOCK)        // 첫째 줄 가운데
-        recipe.setIngredient('C', Material.POWDER_SNOW_BUCKET)   // 첫째 줄 오른쪽
-        recipe.setIngredient('D', Material.END_CRYSTAL)          // 둘째 줄 왼쪽
-        recipe.setIngredient('E', Material.HEART_OF_THE_SEA)  // 둘째 줄 가운데
-        recipe.setIngredient('F', Material.BLAZE_ROD)            // 둘째 줄 오른쪽
-        recipe.setIngredient('G', Material.RESIN_CLUMP)           // 셋째 줄 왼쪽
-        recipe.setIngredient('H', Material.AMETHYST_SHARD)       // 셋째 줄 가운데
-        recipe.setIngredient('I', Material.GLOW_INK_SAC) // 셋째 줄 오른쪽
+        val recipe = ShapelessRecipe(key, bedrock)
+
+        for (ingredient in medicineRecipe) {
+            val material = Material.getMaterial(ingredient.uppercase())
+            if (material != null) {
+                recipe.addIngredient(material)
+            } else {
+                logger.warning("Invalid material in recipe: $ingredient")
+            }
+        }
+
         server.addRecipe(recipe)
     }
 }

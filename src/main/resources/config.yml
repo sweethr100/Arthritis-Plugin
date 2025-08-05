@@ -17,3 +17,14 @@ ages:
   60:
     jump: 100
     run: 25
+
+medicineRecipe: #9개까지만 가능
+  - POINTED_DRIPSTONE
+  - PUFFERFISH
+  - DIAMOND_BLOCK
+  - BLAZE_POWDER
+  - AMETHYST_SHARD
+  - POWDER_SNOW_BUCKET
+  - POPPY
+  - BONE_BLOCK
+  - GHAST_TEAR
