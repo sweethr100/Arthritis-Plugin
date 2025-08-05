@@ -2,10 +2,15 @@ package seml.arthritisPlugin
 
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes.player
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.Sound
 import org.bukkit.Statistic
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.event.player.PlayerStatisticIncrementEvent
@@ -23,12 +28,16 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-
         if (plugin.Arthritis.getScore(player).score == null) {
             plugin.Arthritis.getScore(player).score = 0
         }
 
+        val key = NamespacedKey(plugin, "medicine")
+        player.discoverRecipe(key)
+
         plugin.playerAge[player.uniqueId] = 10
+
+
     }
 
     @EventHandler
@@ -61,4 +70,50 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
         }, 1L)
 
     }
+
+    @EventHandler
+    fun onBlockPlace(event: BlockPlaceEvent) {
+        val item = event.itemInHand
+        if (item.type == Material.BEDROCK) {
+            val meta = item.itemMeta
+            if (meta != null && meta.displayName == "§c관절염 치료제") {
+                // 설치 취소!
+                event.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerItemConsume(event: PlayerItemConsumeEvent) {
+        val player = event.player
+        val item = event.item
+
+        if (item.type == Material.BEDROCK) {
+
+            val meta = item.itemMeta
+            if (meta != null && meta.displayName == "§c관절염 치료제") {
+
+                // 관절염 지수 초기화
+                plugin.Arthritis.getScore(player).score = 0
+
+                // 플레이어에게 효과 부여
+                player.removePotionEffect(PotionEffectType.SLOWNESS)
+
+                // 아이템 제거
+                event.item.amount -= 1
+
+                player.playSound(
+                    player.location,
+                    Sound.BLOCK_BREWING_STAND_BREW,
+                    1f,
+                    1f
+                )
+            }
+        }
+    }
+
+
+
+
+
 }

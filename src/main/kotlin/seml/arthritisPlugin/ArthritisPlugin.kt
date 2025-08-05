@@ -20,11 +20,13 @@ import org.bukkit.Sound
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.entity.Item
+import org.bukkit.scoreboard.Objective
+import net.kyori.adventure.text.Component
 
 class ArthritisPlugin : JavaPlugin() {
 
     lateinit var scoreboard: Scoreboard
-    lateinit var Arthritis: org.bukkit.scoreboard.Objective
+    lateinit var Arthritis: Objective
 
     val playerAge = mutableMapOf<UUID, Int>()
 
@@ -117,14 +119,15 @@ class ArthritisPlugin : JavaPlugin() {
     // TODO : config.yml로 레시피 사용자 설정하기
 
     fun addCustomRecipe() {
-        val bedrock = ItemStack(Material.BEDROCK)
 
-        val builder = Consumable.consumable()
+        val consumable = Consumable.consumable()
             .consumeSeconds(2f)
             .animation(ItemUseAnimation.EAT)
-        val consumable = builder.build()
+            .build()
 
+        val bedrock = ItemStack(Material.BEDROCK)
         bedrock.setData(DataComponentTypes.CONSUMABLE, consumable)
+        bedrock.setData(DataComponentTypes.CUSTOM_NAME, Component.text("§c관절염 치료제"))
 
         val key = NamespacedKey(this, "medicine")
         val recipe = ShapedRecipe(key, bedrock)
