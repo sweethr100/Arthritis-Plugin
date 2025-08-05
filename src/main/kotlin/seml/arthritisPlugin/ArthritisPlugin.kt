@@ -138,7 +138,6 @@ class ArthritisPlugin : JavaPlugin() {
             if (material != null) {
                 medicineRecipe.addIngredient(material)
                     ItemStack(Material.AIR)
-                )
             } else {
                 logger.warning("Invalid material in recipe: $ingredient")
             }

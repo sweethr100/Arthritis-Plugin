@@ -1,5 +1,7 @@
 package seml.arthritisPlugin
 
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes.player
+import io.papermc.paper.registry.data.dialog.body.DialogBody.item
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -90,7 +92,9 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
         val item = event.item
 
         if (item.type == Material.MILK_BUCKET) {
-            plugin.addPlayerArthritis(player,0)
+            plugin.server.scheduler.runTaskLater(plugin, Runnable {
+                plugin.addPlayerArthritis(player,0)
+            }, 1L)
         }
 
         if (item.type == Material.BEDROCK) {
