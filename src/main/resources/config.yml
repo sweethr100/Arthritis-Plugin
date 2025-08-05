@@ -6,20 +6,14 @@ ages:
     jump: 7
     run: 2
   30:
-    jump: 11
-    run: 3
-  40:
     jump: 15
     run: 3
-  50:
+  40:
     jump: 20
     run: 5
-  60:
-    jump: 25
-    run: 6
-  70:
+  50:
     jump: 34
     run: 7
-  80:
+  60:
     jump: 100
     run: 25

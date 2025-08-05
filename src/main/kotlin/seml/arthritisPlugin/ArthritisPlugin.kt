@@ -1,10 +1,7 @@
 package seml.arthritisPlugin
 
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes.players
 import io.papermc.paper.datacomponent.DataComponentTypes
-import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.Consumable.consumable
-import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -14,12 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Scoreboard
-import java.util.UUID
 import kotlin.math.min
 import org.bukkit.Sound
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
-import org.bukkit.entity.Item
 import org.bukkit.scoreboard.Objective
 import net.kyori.adventure.text.Component
 
@@ -27,8 +22,7 @@ class ArthritisPlugin : JavaPlugin() {
 
     lateinit var scoreboard: Scoreboard
     lateinit var Arthritis: Objective
-
-    val playerAge = mutableMapOf<UUID, Int>()
+    lateinit var Ages: Objective
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -39,13 +33,17 @@ class ArthritisPlugin : JavaPlugin() {
         scoreboard.registerNewObjective(
             "arthritis", "dummy"
         )
+        Ages = scoreboard.getObjective("ages") ?:
+        scoreboard.registerNewObjective(
+            "ages", "dummy"
+        )
 
         startArthritisActionBarTask()
         randomArthritisIncrease()
         addCustomRecipe()
     }
 
-    fun getJumpRunListFromMyValue(): List<List<Int>> {
+    fun getAgeList(): List<List<Int>> {
         val myvalue = mutableListOf<List<Int>>()
         val section = config.getConfigurationSection("ages") ?: return emptyList()
         for (key in section.getKeys(false)) {
@@ -120,7 +118,7 @@ class ArthritisPlugin : JavaPlugin() {
 
     fun addCustomRecipe() {
 
-        val consumable = Consumable.consumable()
+        val consumable = consumable()
             .consumeSeconds(2f)
             .animation(ItemUseAnimation.EAT)
             .build()
