@@ -44,7 +44,7 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             val player = event.player
             val age = plugin.Ages.getScore(player).score
 
-            plugin.addPlayerArthritis(event.player,plugin.getAgeList()[(age/10)-1][0])
+            plugin.addPlayerArthritis(event.player,plugin.AgeList[(age/10)-1][0])
         }
     }
 
@@ -54,7 +54,7 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             val player = event.player
             val age = plugin.Ages.getScore(player).score
 
-            plugin.addPlayerArthritis(event.player,plugin.getAgeList()[(age/10)-1][1])
+            plugin.addPlayerArthritis(event.player,plugin.AgeList[(age/10)-1][1])
         }
     }
 

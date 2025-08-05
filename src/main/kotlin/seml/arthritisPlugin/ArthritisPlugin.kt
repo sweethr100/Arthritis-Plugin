@@ -24,6 +24,7 @@ class ArthritisPlugin : JavaPlugin() {
     lateinit var scoreboard: Scoreboard
     lateinit var Arthritis: Objective
     lateinit var Ages: Objective
+    lateinit var AgeList: List<List<Int>>
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -39,12 +40,13 @@ class ArthritisPlugin : JavaPlugin() {
             "ages", "dummy"
         )
 
+        AgeList = getAgeListFromConfig()
         startArthritisActionBarTask()
         randomArthritisIncrease()
         addCustomRecipes()
     }
 
-    fun getAgeList(): List<List<Int>> {
+    fun getAgeListFromConfig(): List<List<Int>> {
         val myvalue = mutableListOf<List<Int>>()
         val section = config.getConfigurationSection("ages") ?: return emptyList()
         for (key in section.getKeys(false)) {
@@ -165,7 +167,7 @@ class ArthritisPlugin : JavaPlugin() {
     }
 
     fun setPlayerAgeRandom(player: Player) {
-        val random = (1..getAgeList().size).random()
+        val random = (1..AgeList.size).random()
         Ages.getScore(player).score = random * 10
 
         player.sendTitle("§a당신의 나이 : ", "§f${random * 10}세", 10, 70, 20)
