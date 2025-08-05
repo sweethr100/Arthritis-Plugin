@@ -122,24 +122,30 @@ class ArthritisPlugin : JavaPlugin() {
             .animation(ItemUseAnimation.EAT)
             .build()
 
-        val bedrock = ItemStack(Material.BEDROCK)
-        bedrock.setData(DataComponentTypes.CONSUMABLE, consumable)
-        bedrock.setData(DataComponentTypes.CUSTOM_NAME, Component.text("§c관절염 치료제"))
 
-        val medicineRecipe = config.getStringList("medicineRecipe")
+
+        val medicine = ItemStack(Material.BEDROCK)
+        medicine.setData(DataComponentTypes.CONSUMABLE, consumable)
+        medicine.setData(DataComponentTypes.CUSTOM_NAME, Component.text("§c관절염 치료제"))
+
+        val recipeIngredients = config.getStringList("medicineRecipe")
 
         val key = NamespacedKey(this, "medicine")
-        val recipe = ShapelessRecipe(key, bedrock)
+        val medicineRecipe = ShapelessRecipe(key, medicine)
 
-        for (ingredient in medicineRecipe) {
+        for (ingredient in recipeIngredients) {
             val material = Material.getMaterial(ingredient.uppercase())
             if (material != null) {
-                recipe.addIngredient(material)
+                medicineRecipe.addIngredient(material)
+                    ItemStack(Material.AIR)
+                )
             } else {
                 logger.warning("Invalid material in recipe: $ingredient")
             }
         }
 
-        server.addRecipe(recipe)
+        server.addRecipe(medicineRecipe)
+
+        val ageChanger = ItemStack(Material.PAPER)
     }
 }

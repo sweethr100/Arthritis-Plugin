@@ -89,6 +89,10 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
         val player = event.player
         val item = event.item
 
+        if (item.type == Material.MILK_BUCKET) {
+            plugin.addPlayerArthritis(player,0)
+        }
+
         if (item.type == Material.BEDROCK) {
 
             val meta = item.itemMeta

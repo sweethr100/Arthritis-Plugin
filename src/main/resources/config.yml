@@ -28,3 +28,14 @@ medicineRecipe: #9개까지만 가능
   - POPPY
   - BONE_BLOCK
   - GHAST_TEAR
+
+ageChangerRecipe: #9개까지만 가능
+  - BREEZE_ROD
+  - GOLDEN_APPLE
+  - BLAZE_ROD
+  - EMERALD_BLOCK
+  - NAME_TAG
+  - EMERALD_BLOCK
+  - BLAZE_ROD
+  - GOLDEN_APPLE
+  - BREEZE_ROD
