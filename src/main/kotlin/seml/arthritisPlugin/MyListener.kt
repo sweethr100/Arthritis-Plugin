@@ -119,13 +119,6 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             val meta = item.itemMeta
             if (meta != null && meta.displayName == "§b나이 랜덤 변경권") {
                 plugin.setPlayerAgeRandom(player)
-
-                player.playSound(
-                    player.location,
-                    Sound.ENTITY_ARROW_HIT_PLAYER,
-                    1f,
-                    1f
-                )
             }
         }
     }

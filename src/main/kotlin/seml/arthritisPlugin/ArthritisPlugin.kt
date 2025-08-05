@@ -171,6 +171,13 @@ class ArthritisPlugin : JavaPlugin() {
         Ages.getScore(player).score = random * 10
 
         player.sendTitle("§a당신의 나이 : ", "§f${random * 10}세", 10, 70, 20)
+
+        player.playSound(
+            player.location,
+            Sound.ENTITY_ARROW_HIT_PLAYER,
+            1f,
+            1f
+        )
     }
 
 }
