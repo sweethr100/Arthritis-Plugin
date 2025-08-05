@@ -41,7 +41,7 @@ class ArthritisPlugin : JavaPlugin() {
 
         startArthritisActionBarTask()
         randomArthritisIncrease()
-        addCustomRecipe()
+        addCustomRecipes()
     }
 
     fun getAgeList(): List<List<Int>> {
@@ -115,7 +115,7 @@ class ArthritisPlugin : JavaPlugin() {
 
     }
 
-    fun addCustomRecipe() {
+    fun addCustomRecipes() {
 
         val consumable = consumable()
             .consumeSeconds(2f)
@@ -128,16 +128,14 @@ class ArthritisPlugin : JavaPlugin() {
         medicine.setData(DataComponentTypes.CONSUMABLE, consumable)
         medicine.setData(DataComponentTypes.CUSTOM_NAME, Component.text("§c관절염 치료제"))
 
-        val recipeIngredients = config.getStringList("medicineRecipe")
+        val medicineIngredients = config.getStringList("medicineRecipe")
 
-        val key = NamespacedKey(this, "medicine")
-        val medicineRecipe = ShapelessRecipe(key, medicine)
+        val medicineRecipe = ShapelessRecipe(NamespacedKey(this, "medicine"), medicine)
 
-        for (ingredient in recipeIngredients) {
+        for (ingredient in medicineIngredients) {
             val material = Material.getMaterial(ingredient.uppercase())
             if (material != null) {
                 medicineRecipe.addIngredient(material)
-                    ItemStack(Material.AIR)
             } else {
                 logger.warning("Invalid material in recipe: $ingredient")
             }
@@ -146,5 +144,31 @@ class ArthritisPlugin : JavaPlugin() {
         server.addRecipe(medicineRecipe)
 
         val ageChanger = ItemStack(Material.PAPER)
+        ageChanger.setData(DataComponentTypes.CONSUMABLE, consumable)
+        ageChanger.setData(DataComponentTypes.CUSTOM_NAME, Component.text("§b나이 랜덤 변경권"))
+
+        val ageChangerIngredients = config.getStringList("ageChangerRecipe")
+
+        val ageChangerRecipe = ShapelessRecipe(NamespacedKey(this, "age_changer"), ageChanger)
+
+        for (ingredient in ageChangerIngredients) {
+            val material = Material.getMaterial(ingredient.uppercase())
+            if (material != null) {
+                ageChangerRecipe.addIngredient(material)
+            } else {
+                logger.warning("Invalid material in recipe: $ingredient")
+            }
+        }
+
+        server.addRecipe(ageChangerRecipe)
+
     }
+
+    fun setPlayerAgeRandom(player: Player) {
+        val random = (1..getAgeList().size).random()
+        Ages.getScore(player).score = random * 10
+
+        player.sendTitle("§a당신의 나이 : ", "§f${random * 10}세", 10, 70, 20)
+    }
+
 }

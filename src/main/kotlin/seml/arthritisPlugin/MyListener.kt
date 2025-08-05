@@ -28,18 +28,13 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             plugin.Ages.getScore(player).score = 10
 
             plugin.server.scheduler.runTaskLater(plugin, Runnable {
-
-                val random = (1..plugin.getAgeList().size).random()
-                plugin.Ages.getScore(player).score = random * 10
-
-                player.sendTitle("§a당신의 나이 : ", "§f${random * 10}세", 10, 70, 20)
-
+                plugin.setPlayerAgeRandom(player)
             }, 20L)
 
         }
 
-        val key = NamespacedKey(plugin, "medicine")
-        player.discoverRecipe(key)
+        player.discoverRecipe(NamespacedKey(plugin, "medicine"))
+        player.discoverRecipe(NamespacedKey(plugin, "age_changer"))
 
     }
 
@@ -97,7 +92,7 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
             }, 1L)
         }
 
-        if (item.type == Material.BEDROCK) {
+        else if (item.type == Material.BEDROCK) {
 
             val meta = item.itemMeta
             if (meta != null && meta.displayName == "§c관절염 치료제") {
@@ -114,6 +109,20 @@ class MyListener(private val plugin: ArthritisPlugin): Listener {
                 player.playSound(
                     player.location,
                     Sound.BLOCK_BREWING_STAND_BREW,
+                    1f,
+                    1f
+                )
+            }
+        }
+
+        else if (item.type == Material.PAPER) {
+            val meta = item.itemMeta
+            if (meta != null && meta.displayName == "§b나이 랜덤 변경권") {
+                plugin.setPlayerAgeRandom(player)
+
+                player.playSound(
+                    player.location,
+                    Sound.ENTITY_ARROW_HIT_PLAYER,
                     1f,
                     1f
                 )
